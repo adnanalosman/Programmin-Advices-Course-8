@@ -61,6 +61,12 @@ short MinutesinYear(short& Year) {
 short SecondsinYear(short& Year) {
 	return MinutesinYear(Year) * 60;
 	}
+
+void PartsOfYear(short& Year) {
+	cout << "Number of Days is    " << DaysinYear(Year) << endl;
+	cout << "Number of Hours is   " << HoursinYear(Year) << endl;
+	cout << "Number of Minutes is " << MinutesinYear(Year) << endl;
+	cout << "Number of Seconds is " << SecondsinYear(Year) << endl;
 }
 
 
@@ -68,6 +74,13 @@ short DaysInMonth(short& Month, short& Year) {
 	return (isLeapYear(Year)) ? ((Month % 2 != 0) ? 31 : (Month == 2) ? 29 : 30) : ((Month % 2 != 0) ? 31 : (Month == 2) ? 28 : 30);
 }
 
+int main() {
 
+	short Year; Year = ReadInput(Year);
+	cout << SpellNumbers(Year) << endl;
+	(isLeapYear(Year)) ? cout << Year << " is a Leap Year!" << endl : cout << Year << " is not a Leap Year!" << endl;
 
+	PartsOfYear(Year);
+	short Month; Month = ReadInput(Month);
+	cout << "Days in this month is " << DaysInMonth(Month, Year);
 }
