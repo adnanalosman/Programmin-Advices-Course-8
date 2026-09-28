@@ -37,17 +37,8 @@ string SpellNumbers(short Input) {
 	if (Input >= 1000000000) return SpellNumbers(Input / 1000000000) + " Billion " + SpellNumbers(Input % 1000000000);
 }
 
-bool LeapYear(short& Year) {
-	if (Year % 100 == 0 && Year % 400 == 0)
-	{
-		return true;
-	}
-	else if (Year % 4 == 0) return true;
-	else return false;
-}
-
 bool isLeapYear(short& Year) {
-	return ((Year % 100 == 0 && Year % 400 == 0) || Year % 4 == 0);
+	return (Year % 400 == 0) || (Year % 4 == 0 && Year % 100 != 0);
 }
 
 short DaysinYear(short& Year) {
@@ -85,7 +76,7 @@ short DaysInMonth(short& Month, short& Year) {
 }
 
 
-short DayOrderOfWeek(short& Year, short& Month, short& Day) {
+short DayOrderOfWeek(short& Year, short& Month, short Day) {
 	const short a = (14 - Month) / 12;
 	const short y = Year - a;
 	const short m = Month + 12 * a - 2;
@@ -133,16 +124,16 @@ string MonthofYear(short& Month) {
 }
 
 void PrintCalender() {
-	int Arr[5][7]; short Year, Month, Day = 1;
+	short Year, Month, Day = 1;
 	Year = ReadDayInput(Year, "Year: ");
 	Month = ReadDayInput(Month, "Month: ");
 
-	cout << "\n ــــــــــــــ " << MonthofYear(Month) << " ــــــــــــــ\n" << endl;
-	cout << " Sun  Mon  Tue  Wed  Thu  Fri  Sat" << endl << " ";
+	cout << "\n ــــــــــــــ " << MonthofYear(Month).c_str() << " ــــــــــــــ\n" << endl;
+	cout << " Sun  Mon  Tue  Wed  Thu  Fri  Sat" << endl << endl << " ";
 	for (short y = 0; y < 7; y++) {
 		if (y >= DayOrderOfWeek(Year, Month, Day)) cout << y - DayOrderOfWeek(Year, Month, Day) + 1 << "    ";
 		else cout << "     ";
-	} cout << endl;
+	} cout << endl << endl;
 
 	Day = 8 - DayOrderOfWeek(Year, Month, Day);
 
@@ -153,13 +144,41 @@ void PrintCalender() {
 			Day++;
 			if (Day > DaysInMonth(Month, Year)) return;
 		}
-		cout << endl;
+		cout << endl << endl;
+	}
+
+}
+
+void PrintYearCalender() {
+	short Year = 0; Year = ReadDayInput(Year, "Year: ");
+	for (short i = 1; i <= 12; i++) {
+		short Month = i, Day = 1;
+		cout << "\n ــــــــــــــ " << MonthofYear(Month).c_str() << " ــــــــــــــ\n" << endl;
+		cout << " Sun  Mon  Tue  Wed  Thu  Fri  Sat" << endl << endl << " ";
+		for (short y = 0; y < 7; y++) {
+			if (y >= DayOrderOfWeek(Year, Month, 1)) cout << y - DayOrderOfWeek(Year, Month, 1) + 1 << "    ";
+			else cout << "     ";
+		} cout << endl << endl;
+
+		Day = 8 - DayOrderOfWeek(Year, Month, 1);
+		bool done = false;
+		for (short i = 1; i <= 5 && !done; i++) {
+			cout << " ";
+			for (short j = 0; j < 7 && !done; j++) {
+				cout << setw(5) << left << Day;
+				Day++;
+				if (Day > DaysInMonth(Month, Year)) done = true;
+			}
+			cout << endl << endl;
+		}
+		cout << "________________________________" << endl;
 	}
 
 }
 
 int main() {
 
-	PrintCalender();
-
+	//PrintCalender();
+	PrintYearCalender();
+	system("pause>0");
 }
