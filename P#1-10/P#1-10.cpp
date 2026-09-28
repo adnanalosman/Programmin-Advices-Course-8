@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <iomanip>
 
 
 using namespace std;
@@ -74,10 +75,15 @@ void PartsOfYear(short& Year) {
 
 
 short DaysInMonth(short& Month, short& Year) {
-	return (isLeapYear(Year)) ? ((Month % 2 != 0) ? 31 : (Month == 2) ? 29 : 30) : ((Month % 2 != 0) ? 31 : (Month == 2) ? 28 : 30);
+	if (Month < 1 || Month > 12)
+		return 0;
+
+	short DaysArr[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+	// فبراير هو الوحيد اللي بيتغير حسب السنة الكبيسة
+	return (Month == 2) ? (isLeapYear(Year) ? 29 : 28) : DaysArr[Month - 1];
 }
 
-enum enDaysName { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday };
 
 short DayOrderOfWeek(short& Year, short& Month, short& Day) {
 	const short a = (14 - Month) / 12;
@@ -90,28 +96,8 @@ short DayOrderOfWeek(short& Year, short& Month, short& Day) {
 string DayOfWeek(short& DayOrder) {
 	if (DayOrder >= 0 && DayOrder < 7)
 	{
-		switch (DayOrder) {
-		case enDaysName::Sunday:
-			return "Sun";
-			break;
-		case enDaysName::Monday:
-			return "Mon";
-			break;
-		case enDaysName::Tuesday:
-			return "Tue";
-			break;
-		case enDaysName::Wednesday:
-			return "Wed";
-			break;
-		case enDaysName::Thursday:
-			return "Thu";
-			break;
-		case enDaysName::Friday:
-			return "Fri";
-			break;
-		case enDaysName::Saturday:
-			return "Sat";
-		}
+		string Arr[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+		return Arr[DayOrder];
 	}
 	else return "N/A";
 }
@@ -137,8 +123,43 @@ void GetDateDetails() {
 	cout << "DayName: " << DayOfWeek(WeekDay) << endl;
 }
 
+string MonthofYear(short& Month) {
+	if (Month >= 0 && Month <= 12)
+	{
+		string Arr[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+		return Arr[Month - 1];
+	}
+	else return "N/A";
+}
+
+void PrintCalender() {
+	int Arr[5][7]; short Year, Month, Day = 1;
+	Year = ReadDayInput(Year, "Year: ");
+	Month = ReadDayInput(Month, "Month: ");
+
+	cout << "\n ــــــــــــــ " << MonthofYear(Month) << " ــــــــــــــ\n" << endl;
+	cout << " Sun  Mon  Tue  Wed  Thu  Fri  Sat" << endl << " ";
+	for (short y = 0; y < 7; y++) {
+		if (y >= DayOrderOfWeek(Year, Month, Day)) cout << y - DayOrderOfWeek(Year, Month, Day) + 1 << "    ";
+		else cout << "     ";
+	} cout << endl;
+
+	Day = 8 - DayOrderOfWeek(Year, Month, Day);
+
+	for (int i = 1; i < 5; i++) {
+		cout << " ";
+		for (int j = 0; j < 7; j++) {
+			cout << setw(5) << left << Day;
+			Day++;
+			if (Day > DaysInMonth(Month, Year)) return;
+		}
+		cout << endl;
+	}
+
+}
+
 int main() {
 
-	GetDateDetails();
+	PrintCalender();
 
 }
