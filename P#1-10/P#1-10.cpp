@@ -162,10 +162,6 @@ void GetDateAfterAdding(short& DaysToAdd, short& Day, short& Month, short& Year)
 }
 
 
-short DaysInMonth(short Month, short Year) {
-    return (isLeapYear(Year)) ? ((Month % 2 != 0) ? 31 : (Month == 2) ? 29 : 30) : ((Month % 2 != 0) ? 31 : (Month == 2) ? 28 : 30);
-}
-
 short Days_Start_Year_Today(short& Year, short& Month, short& Day) {
     short Output = 0;
     for (short i = 1; i < Month; i++) {
@@ -220,6 +216,13 @@ bool isDatesEquals(stDate& Date1, stDate& Date2) {
     return (Date1.Year == Date2.Year) ? ((Date1.Month == Date2.Month) ? Date1.Day == Date2.Day : false) : false;
 }
 
+bool isLastDayOfMonth(stDate& Date) {
+    return Date.Day == DaysInMonth(Date.Month, Date.Month);
+}
+
+bool isLastMonthOfYear(stDate& Date) {
+    return Date.Month == 12;
+}
 
 int main() {
     //short Year, Month, Day, TotalDays;
@@ -247,15 +250,17 @@ int main() {
 
     //cout << "New date after adding days is: " << Date.Year << "/" << Date.Month << "/" << Date.Day << endl;
 
-   /* stDate FirstDate = ReadFullDate();
-    stDate SecondDate = ReadFullDate();*/
+    //stDate FirstDate = ReadFullDate();
+    //stDate SecondDate = ReadFullDate();
 
     //(CompareDates(FirstDate, SecondDate)) ? printf("FirstDate is newer!") : printf("SecondDate  is newer!");
 
     //(isDatesEquals(FirstDate, SecondDate)) ? printf("Dates are equals!") : printf("Dates are not equals!");
 
-
-
+    //P#15 is last day/month
+    stDate Date = ReadFullDate();
+    (isLastDayOfMonth(Date)) ? cout << "Yes this day " << Date.Day << " is the last of month" : cout << "No! this day " << Date.Day << " is not the last of month";
+    (isLastMonthOfYear(Date)) ? cout << "\nYes month is the last of this year." : cout << "\nNo! this month is not the last of this year!";
 
     system("pause>0");
     return 0;
