@@ -1,3 +1,4 @@
+#pragma warning (disable : 4996)
 #include <iostream>
 #include <string>
 #include <limits>
@@ -209,19 +210,85 @@ stDate ReadFullDate() {
 }
 
 bool CompareDates(stDate& Date1, stDate& Date2) {
-    return (Date1.Year > Date2.Year) ? true : (Date1.Year < Date2.Year) ? false : ((Date1.Month > Date2.Month) ? true : ((Date1.Month < Date2.Month) ? false : (Date1.Day > Date1.Day)));
+    return (Date1.Year > Date2.Year) ? true : (Date1.Year < Date2.Year) ? false : ((Date1.Month >= Date2.Month) ? true : ((Date1.Month < Date2.Month) ? false : (Date1.Day > Date1.Day)));
 }
 
 bool isDatesEquals(stDate& Date1, stDate& Date2) {
     return (Date1.Year == Date2.Year) ? ((Date1.Month == Date2.Month) ? Date1.Day == Date2.Day : false) : false;
 }
 
-bool isLastDayOfMonth(stDate& Date) {
+bool isLastDayOfMonth(stDate Date) {
     return Date.Day == DaysInMonth(Date.Month, Date.Month);
 }
 
-bool isLastMonthOfYear(stDate& Date) {
+bool isLastMonthOfYear(stDate Date) {
     return Date.Month == 12;
+}
+
+stDate IncreseDateOneDay(stDate Date) {
+    if (isLastDayOfMonth(Date)) {
+        Date.Day = 1;
+        if (isLastMonthOfYear(Date)) {
+            Date.Year++;
+            Date.Month = 1;
+        }
+        else Date.Month++;
+    }
+    else
+    {
+        Date.Day++;
+    }
+    return Date;
+}
+
+short DateDif(stDate Date1, stDate Date2) {
+    if (Date1.Year != Date2.Year)
+    {
+        short Output = Days_Start_Year_Today(Date2.Year, Date2.Month, Date2.Day) - Days_Start_Year_Today(Date1.Year, Date1.Month, Date1.Day);
+        for (short i = Date1.Year; i < Date2.Year; i++) {
+            Output += DaysinYear(i);
+        }
+        return Output;
+    }
+    else
+    {
+        return Days_Start_Year_Today(Date2.Year, Date2.Month, Date2.Day) - Days_Start_Year_Today(Date1.Year, Date1.Month, Date1.Day);
+    }
+}
+
+stDate DateDifYears(stDate Date1, stDate Date2) {
+    stDate Output;
+    if (Date1.Year != Date2.Year)
+    {
+        (Date2.Year > Date1.Year) ? Output.Year = Date2.Year - Date1.Year : Output.Year = Date1.Year - Date2.Year;
+        (Date2.Month > Date1.Month) ? Output.Month = Date2.Month - Date1.Month : Output.Month = Date1.Month - Date2.Month;
+        (Date2.Day > Date1.Day) ? Output.Day = Date2.Day - Date1.Day : Output.Day = Date1.Day - Date2.Day;
+    }
+    else {
+        (Date2.Month > Date1.Month) ? Output.Month = Date2.Month - Date1.Month : Output.Month = Date1.Month - Date2.Month;
+        (Date2.Day > Date1.Day) ? Output.Day = Date2.Day - Date1.Day : Output.Day = Date1.Day - Date2.Day;
+        Output.Year = Date1.Year;
+    }
+    return Output;
+}
+
+stDate GetSysDate() {
+    stDate Localtime;
+    time_t t = time(0);
+    tm* now = localtime(&t);
+
+    Localtime.Year = now->tm_year + 1900;
+    Localtime.Month = now->tm_mon + 1;
+    Localtime.Day = now->tm_mday;
+
+    return Localtime;
+}
+
+void CalculateAge(stDate Birthday) {
+    stDate Age;
+    Age = DateDifYears(Birthday, GetSysDate());
+
+    cout << "Your Age now is " << Age.Year << " Years, " << Age.Month << " Months, " << Age.Day << " Days." << endl;
 }
 
 int main() {
@@ -258,9 +325,23 @@ int main() {
     //(isDatesEquals(FirstDate, SecondDate)) ? printf("Dates are equals!") : printf("Dates are not equals!");
 
     //P#15 is last day/month
-    stDate Date = ReadFullDate();
-    (isLastDayOfMonth(Date)) ? cout << "Yes this day " << Date.Day << " is the last of month" : cout << "No! this day " << Date.Day << " is not the last of month";
-    (isLastMonthOfYear(Date)) ? cout << "\nYes month is the last of this year." : cout << "\nNo! this month is not the last of this year!";
+    //stDate Date = ReadFullDate();
+    //(isLastDayOfMonth(Date)) ? cout << "Yes this day " << Date.Day << " is the last of month" : cout << "No! this day " << Date.Day << " is not the last of month";
+    //(isLastMonthOfYear(Date)) ? cout << "\nYes month is the last of this year." : cout << "\nNo! this month is not the last of this year!";
+
+    //Date = IncreseDateOneDay(Date);
+    //cout << "Date after adding one day is " << Date.Day << "/" << Date.Month << "/" << Date.Year << endl;
+    //stDate OlderDate = ReadFullDate();
+    //cout << "Diffrence bwtween dates is " << DateDif(Date, OlderDate) << " days.";
+
+    //stDate Diff = DateDifYears(OlderDate, Date);
+    //cout << "Years = " << Diff.Year << "\nMonths = " << Diff.Month << "\nDays = " << Diff.Day << endl;
+
+    //P#18
+    cout << "Please Enter your birthday details below:" << endl;
+    stDate BirthDay = ReadFullDate();
+
+    CalculateAge(BirthDay);
 
     system("pause>0");
     return 0;
